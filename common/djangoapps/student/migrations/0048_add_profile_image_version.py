@@ -9,14 +9,14 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding field 'UserProfile.has_profile_image'
-        db.add_column('auth_userprofile', 'has_profile_image',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
+        db.add_column('auth_userprofile', 'profile_image_uploaded_at',
+                      self.gf('django.db.models.fields.DateTimeField')(null=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
         # Deleting field 'UserProfile.has_profile_image'
-        db.delete_column('auth_userprofile', 'has_profile_image')
+        db.delete_column('auth_userprofile', 'profile_image_uploaded_at')
 
 
     models = {

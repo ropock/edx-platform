@@ -2,6 +2,7 @@
 This module implements the upload and remove endpoints of the profile image api.
 """
 from contextlib import closing
+import datetime
 
 from django.utils.translation import ugettext as _
 from rest_framework import permissions, status
@@ -15,8 +16,16 @@ from openedx.core.lib.api.authentication import (
     SessionAuthenticationAllowInactiveUser,
 )
 from openedx.core.lib.api.permissions import IsUserInUrl, IsUserInUrlOrStaff
-from openedx.core.djangoapps.user_api.accounts.image_helpers import set_has_profile_image, get_profile_image_names
+from openedx.core.djangoapps.user_api.accounts.image_helpers import get_profile_image_names, set_has_profile_image
 from .images import validate_uploaded_image, create_profile_images, remove_profile_images, ImageValidationError
+
+
+def _make_upload_dt():
+    """
+    Generate a server-side timestamp for the upload.  This is in a separate
+    function so its behavior can be overridden in tests.
+    """
+    return datetime.datetime.utcnow()
 
 
 class ProfileImageUploadView(APIView):
@@ -84,8 +93,8 @@ class ProfileImageUploadView(APIView):
                 # generate profile pic and thumbnails and store them
                 create_profile_images(uploaded_file, get_profile_image_names(username))
 
-                # update the user account to reflect that a profile image is available.
-                set_has_profile_image(username, True)
+                # update the user account to reflect the new image version.
+                set_has_profile_image(username, True, _make_upload_dt())
         except Exception as error:
             return Response(
                 {
