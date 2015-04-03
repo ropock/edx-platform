@@ -7,6 +7,8 @@ class ReverificationService(object):
     def get_status(self, course_id, checkpoint_name):
         course_key = CourseKey.from_string(course_id)
         checkpoint = VerificationCheckpoint.get_verification_checkpoint(course_key, checkpoint_name)
+        if not checkpoint:
+            return None
         checkpoint_status = checkpoint.get_latest_status()
         if checkpoint_status:
             return checkpoint_status.status
