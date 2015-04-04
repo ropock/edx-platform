@@ -686,7 +686,7 @@ def dashboard(request):
         'user': user,
         'duplicate_provider': None,
         'logout_url': reverse(logout_user),
-        'platform_name': settings.PLATFORM_NAME,
+        'platform_name': microsite.get_value("platform_name", settings.PLATFORM_NAME),
         'enrolled_courses_either_paid': enrolled_courses_either_paid,
         'provider_states': [],
         'order_history_list': order_history_list,
