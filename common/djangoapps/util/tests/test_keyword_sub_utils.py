@@ -48,21 +48,23 @@ class KeywordSubTest(ModuleStoreTestCase):
         self.assertIn(course_name, result)
         self.assertEqual(result, test_info['expected'])
 
-    @file_data('fixtures/test_keyword_anonid_sub.json')
-    def test_anonymous_id_subs(self, test_info):
-        """ Tests subbing anon user id in various scenarios """
-        anon_id = '123456789'
-
-        with patch('util.keyword_substitution.anonymous_id_from_user_id', lambda user_id: anon_id):
-            result = Ks.substitute_keywords_with_data(
-                test_info['test_string'], self.context
-            )
-
-            self.assertIn(anon_id, result)
-            self.assertEqual(result, test_info['expected'])
+    def test_anonymous_id_sub(self):
+        """
+        Test that anonymous_id is subbed
+        """
+        test_string = "Turn %%USER_ID%% into anonymous id"
+        anonymous_id = Ks.anonymous_id_from_user_id(self.user.id)
+        result = Ks.substitute_keywords_with_data(
+            test_string, self.context
+        )
+        self.assertNotIn('%%USER_ID%%', result)
+        self.assertIn(anonymous_id, result)
 
     def test_name_sub(self):
-        test_string = "This is the test string. subthis:  %%USER_FULLNAME%% into user name"
+        """
+        Test that the user's full name is correctly subbed
+        """
+        test_string = "This is the test string. subthis: %%USER_FULLNAME%% into user name"
         user_name = self.user.profile.name
         result = Ks.substitute_keywords_with_data(
             test_string, self.context
