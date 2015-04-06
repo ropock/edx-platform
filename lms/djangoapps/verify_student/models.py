@@ -946,9 +946,9 @@ class VerificationCheckpoint(models.Model):
         """
         self.photo_verification.add(verification_attempt)  # pylint: disable=no-member
 
-    def get_latest_status(self):
+    def get_user_latest_status(self, user_id):
         try:
-            return self.checkpoint_status.latest()
+            return self.checkpoint_status.filter(user_id=user_id).latest()
         except ObjectDoesNotExist:
             return None
 
