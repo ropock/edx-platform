@@ -36,6 +36,7 @@ from commerce.api import EcommerceAPI
 from commerce.exceptions import ApiError
 from course_modes.models import CourseMode
 from student.models import CourseEnrollment
+from student.helpers import check_verify_status_by_course
 from student.views import reverification_info
 from shoppingcart.models import Order, CertificateItem
 from shoppingcart.processors import (
@@ -376,6 +377,15 @@ class PayAndVerifyView(View):
         # so we can fire an analytics event upon payment.
         request.session['attempting_upgrade'] = (message == self.UPGRADE_MSG)
 
+        # Determine the course verification status
+        course_enrollment = CourseEnrollment.get_enrollment(request.user, course_key)
+        all_course_modes, unexpired_modes = CourseMode.all_and_unexpired_modes_for_courses([course_key])
+        verify_status_by_course = check_verify_status_by_course(
+            request.user,
+            [(course, course_enrollment)],
+            all_course_modes
+        )
+
         # Render the top-level page
         context = {
             'contribution_amount': contribution_amount,
@@ -396,6 +406,8 @@ class PayAndVerifyView(View):
                 get_default_time_display(unexpired_paid_course_mode.expiration_datetime)
                 if unexpired_paid_course_mode.expiration_datetime else ""
             ),
+            'already_verified': already_verified,
+            'verification_good_until': verify_status_by_course[course_key].get('verification_good_until'),
         }
         return render_to_response("verify_student/pay_and_verify.html", context)
 

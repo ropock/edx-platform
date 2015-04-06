@@ -21,7 +21,9 @@ var edx = edx || {};
                 courseName: '',
                 requirements: {},
                 hasVisibleReqs: false,
-                platformName: ''
+                platformName: '',
+                alreadyVerified: false,
+                verificationGoodUntil: ''
             };
         },
 
@@ -34,15 +36,6 @@ var edx = edx || {};
 
             // Track a virtual pageview, for easy funnel reconstruction.
             window.analytics.page( 'payment', this.templateName );
-
-            // Set the payment button to disabled by default
-            this.setPaymentEnabled( false );
-
-            // Update the contribution amount with the amount the user
-            // selected in a previous screen.
-            if ( templateContext.contributionAmount ) {
-                this.selectPaymentAmount( templateContext.contributionAmount );
-            }
 
             // The contribution section is hidden by default
             // Display it if the user hasn't already selected an amount

@@ -60,7 +60,9 @@ var edx = edx || {};
                 ),
                 currency: el.data('course-mode-currency'),
                 purchaseEndpoint: el.data('purchase-endpoint'),
-                verificationDeadline: el.data('verification-deadline')
+                verificationDeadline: el.data('verification-deadline'),
+                alreadyVerified: el.data('already-verified'),
+                verificationGoodUntil: el.data('verification-good-until')
             },
             'payment-confirmation-step': {
                 courseKey: el.data('course-key'),
