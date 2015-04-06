@@ -157,6 +157,7 @@ def _get_course_email_context(course):
         'course_title': course_title,
         'course_url': course_url,
         'course_image_url': image_url,
+        'course_end_date': course_end_date,
         'account_settings_url': 'https://{}{}'.format(settings.SITE_NAME, reverse('dashboard')),
         'platform_name': settings.PLATFORM_NAME,
     }
